@@ -28,7 +28,25 @@ export function useSocket(serverUrl: string): UseSocketReturn {
       setMensajes(prevMensajes => [...prevMensajes, nuevoMensaje]);
     };
 
+    const handleNuevaRespuestaAudio = (audioBuffer: ArrayBuffer) => {
+      console.log('🎧 ¡Audio buffer recibido en el frontend!', audioBuffer);
+
+      const blob = new Blob([audioBuffer], { type: 'audio/mpeg' });
+      const audioUrl = URL.createObjectURL(blob);
+      const audio = new Audio(audioUrl);
+      
+      audio.addEventListener('ended', () => {
+        URL.revokeObjectURL(audioUrl);
+      });
+      
+      audio.play().catch((error) => {
+        console.error('Error playing audio:', error);
+        URL.revokeObjectURL(audioUrl);
+      });
+    };
+
     socket.on('nuevaRespuesta', handleNuevaRespuesta);
+    socket.on('nuevaRespuestaAudio', handleNuevaRespuestaAudio);
 
     return () => {
       socket.disconnect();
