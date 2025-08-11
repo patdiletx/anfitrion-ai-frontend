@@ -19,12 +19,7 @@ export function useSocket(serverUrl: string): UseSocketReturn {
     const socket: Socket = io(serverUrl);
     socketRef.current = socket;
 
-    const handleNuevaRespuesta = (respuesta: string) => {
-      const nuevoMensaje: Message = {
-        autor: 'nexus',
-        texto: respuesta
-      };
-      
+    const handleNuevaRespuesta = (nuevoMensaje: Message) => {      
       setMensajes(prevMensajes => [...prevMensajes, nuevoMensaje]);
     };
 
